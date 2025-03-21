@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Design Process & Criteria | Interactive Learning</title>
+    <style>
+        :root {
+            --primary-dark: #003152;
+            --primary-light: #4FB0C6;
+            --accent: #FF1493;
+            --secondary-accent: #90EE90;
+            --text-light: #FFFFFF;
+            --text-dark: #333333;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f5f5f5;
+            color: var(--text-dark);
+            line-height: 1.6;
+        }
+        /* Clock background animation */
+        .clock-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.04;
+            pointer-events: none;
+        }
+
+        .clock-outline {
+            position: absolute;
+            border: 2px solid var(--primary-dark);
+            border-radius: 50%;
+            opacity: 0.3;
+            animation: float 20s infinite ease-in-out;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translate(0, 0) rotate(0deg);
+            }
+
+            25% {
+                transform: translate(20px, 20px) rotate(90deg);
+            }
+
+            50% {
+                transform: translate(0, 40px) rotate(180deg);
+            }
+
+            75% {
+                transform: translate(-20px, 20px) rotate(270deg);
+            }
+
+            100% {
+                transform: translate(0, 0) rotate(360deg);
+            }
+        }
+        header {
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-light) 100%);
+            padding: 2rem 0;
+            color: var(--text-light);
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header-pattern {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(45deg, rgba(255,255,255,0.1), rgba(255,255,255,0.1) 10px, transparent 10px, transparent 20px);
+            z-index: 0;
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .tagline {
+            font-size: 1.2rem;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        section {
+            background: white;
+            border-radius: 8px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        h2 {
+            color: var(--primary-dark);
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid var(--primary-light);
+            padding-bottom: 0.5rem;
+        }
+
+        h3 {
+            color: var(--primary-dark);
+            margin: 1.5rem 0 1rem;
+        }
+
+        p {
+            margin-bottom: 1rem;
+        }
+
+        .video-container {
+            position: relative;
+            padding-bottom: 56.25%;
+            height: 0;
+            overflow: hidden;
+            margin: 1.5rem 0;
+        }
+
+            .video-container iframe {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                border: none;
+                border-radius: 8px;
+            }
+
+        .criteria-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .criteria-card {
+            flex: 1 1 200px;
+            background: linear-gradient(to bottom, var(--primary-dark), #002040);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+
+            .criteria-card:hover {
+                transform: translateY(-5px);
+            }
+
+        .criteria-title {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .purpose {
+            border-top: 3px solid #FF1493;
+        }
+
+        .function {
+            border-top: 3px solid #90EE90;
+        }
+
+        .target-market {
+            border-top: 3px solid #FFD700;
+        }
+
+        .form {
+            border-top: 3px solid var(--primary-light);
+        }
+
+        .btn {
+            display: inline-block;
+            background-color: var(--primary-light);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 4px;
+            text-decoration: none;
+            margin-top: 1rem;
+            transition: background-color 0.3s ease;
+            cursor: pointer;
+            border: none;
+            font-weight: 600;
+            text-align: center;
+        }
+
+            .btn:hover {
+                background-color: var(--primary-dark);
+            }
+
+        .canvas-container {
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .canvas-row {
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #eee;
+        }
+
+            .canvas-row:last-child {
+                border-bottom: none;
+            }
+
+            .canvas-row h4 {
+                margin-bottom: 0.5rem;
+                color: var(--primary-dark);
+            }
+
+        .criteria-input {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-bottom: 0.5rem;
+        }
+
+        .add-criteria {
+            background-color: #eee;
+            border: 1px dashed #ccc;
+            border-radius: 4px;
+            padding: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+            .add-criteria:hover {
+                background-color: #ddd;
+            }
+
+        .criteria-list {
+            list-style-type: none;
+        }
+
+            .criteria-list li {
+                background-color: white;
+                padding: 0.5rem 1rem;
+                margin-bottom: 0.5rem;
+                border-radius: 4px;
+                border-left: 3px solid var(--primary-light);
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+
+        .remove-item {
+            color: #ff6b6b;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .tips-box {
+            background-color: #f5f5f5;
+            border-left: 4px solid var(--accent);
+            padding: 1rem;
+            margin: 1.5rem 0;
+        }
+
+            .tips-box h4 {
+                margin-bottom: 0.5rem;
+                color: var(--accent);
+            }
+
+            .tips-box ul {
+                padding-left: 1.5rem;
+                margin-bottom: 0;
+            }
+
+        footer {
+            background-color: var(--primary-dark);
+            color: white;
+            text-align: center;
+            padding: 2rem 0;
+            margin-top: 3rem;
+        }
+
+        .footer-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .tab-container {
+            margin: 2rem 0;
+        }
+
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .tab {
+            padding: 0.75rem 1.5rem;
+            cursor: pointer;
+            border: 1px solid transparent;
+            border-bottom: none;
+            border-radius: 4px 4px 0 0;
+            background-color: #f5f5f5;
+            margin-right: 0.5rem;
+            font-weight: 600;
+        }
+
+            .tab.active {
+                background-color: white;
+                border-color: #ddd;
+                color: var(--primary-dark);
+            }
+
+        .tab-content {
+            display: none;
+            padding: 1.5rem;
+            background-color: white;
+            border: 1px solid #ddd;
+            border-top: none;
+            border-radius: 0 0 4px 4px;
+        }
+
+            .tab-content.active {
+                display: block;
+            }
+        /* Colorful tabs */
+        .tab[data-tab="purpose-tab"] {
+            background-color: rgba(255, 20, 147, 0.1);
+            border-color: var(--purpose-color);
+            color: var(--purpose-color);
+        }
+
+        .tab[data-tab="function-tab"] {
+            background-color: rgba(144, 238, 144, 0.1);
+            border-color: var(--function-color);
+            color: var(--function-color);
+        }
+
+        .tab[data-tab="target-tab"] {
+            background-color: rgba(255, 215, 0, 0.1);
+            border-color: var(--target-color);
+            color: var(--target-color);
+        }
+
+        .tab[data-tab="form-tab"] {
+            background-color: rgba(79, 176, 198, 0.1);
+            border-color: var(--form-color);
+            color: var(--form-color);
+        }
+        .step-container {
+            display: flex;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            gap: 1rem;
+            padding: 1rem 0;
+            margin: 2rem 0;
+        }
+
+        .step-card {
+            flex: 0 0 300px;
+            scroll-snap-align: start;
+            background-color: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            border-top: 4px solid var(--primary-light);
+        }
+
+            .step-card h3 {
+                margin-top: 0;
+                color: var(--primary-dark);
+            }
+
+        .step-number {
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            background-color: var(--primary-light);
+            color: white;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 30px;
+            margin-right: 0.5rem;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            .criteria-container {
+                flex-direction: column;
+            }
+
+            .tab {
+                padding: 0.5rem 1rem;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-pattern"></div>
+        <div class="header-content">
+            <h1>Design Technologies</h1>
+            <p class="tagline">Exploring the Design Process and Developing Effective Design Criteria</p>
+        </div>
+    </header>
+
+    <div class="container">
+        <section id="introduction">
+            <h2>Introduction to Design Technologies</h2>
+            <p>Welcome to the interactive Design Technologies module! This resource will guide you through understanding the design process and how to develop effective design criteria for your projects. Whether you're creating a clock (as shown in our examples) or any other design project, the principles you'll learn here will help you approach design challenges systematically.</p>
+
+            <div class="video-container">
+                <iframe src="https://www.youtube.com/embed/W-eqjMc1Efs" allowfullscreen></iframe>
+            </div>
+
+            <p>The video above introduces the design process for students in Design and Technology / STEM classrooms. Understanding this process is crucial to developing successful design solutions.</p>
+        </section>
+
+        <section id="design-process">
+            <h2>The Design Process</h2>
+
+            <p>The design process is a systematic approach to problem-solving that designers use to create effective solutions. It involves several key stages:</p>
+
+            <div class="step-container">
+                <div class="step-card">
+                    <h3><span class="step-number">1</span>Identify the Problem</h3>
+                    <p>Clearly define what problem needs to be solved or what need must be addressed. This stage involves research to fully understand the context and constraints.</p>
+                </div>
+
+                <div class="step-card">
+                    <h3><span class="step-number">2</span>Research & Investigation</h3>
+                    <p>Gather information about similar products, materials, technologies, and user needs. This research will inform your design decisions.</p>
+                </div>
+
+                <div class="step-card">
+                    <h3><span class="step-number">3</span>Develop Design Criteria</h3>
+                    <p>Establish specific criteria that your design must meet. These criteria will serve as a guide throughout the design process and help evaluate your final solution.</p>
+                </div>
+
+                <div class="step-card">
+                    <h3><span class="step-number">4</span>Generate Ideas</h3>
+                    <p>Brainstorm multiple possible solutions. Explore different approaches and concepts without judging them initially.</p>
+                </div>
+
+                <div class="step-card">
+                    <h3><span class="step-number">5</span>Develop Solutions</h3>
+                    <p>Select the most promising ideas and develop them further. Create detailed drawings, models, or prototypes to explore how they might work.</p>
+                </div>
+
+                <div class="step-card">
+                    <h3><span class="step-number">6</span>Testing & Evaluation</h3>
+                    <p>Test your solution against the design criteria. Identify strengths and weaknesses and consider how the design could be improved.</p>
+                </div>
+
+                <div class="step-card">
+                    <h3><span class="step-number">7</span>Refinement</h3>
+                    <p>Make improvements based on testing and evaluation. This might involve several iterations to optimize your solution.</p>
+                </div>
+            </div>
+
+            <p>The design process is not strictly linear – designers often move back and forth between stages as they develop their solutions. For example, testing might reveal new information that requires revisiting the design criteria or generating new ideas.</p>
+        </section>
+
+        <section id="design-criteria">
+            <h2>Creating Effective Design Criteria</h2>
+
+            <p>Design criteria are the specific requirements that your product must meet to be considered successful. Well-defined criteria provide clear direction for your design and serve as a reference point for evaluation.</p>
+
+            <div class="criteria-container">
+                <div class="criteria-card purpose">
+                    <h3 class="criteria-title">PURPOSE</h3>
+                    <p>What is your product meant to do? What problem does it solve? What needs does it address?</p>
+                </div>
+
+                <div class="criteria-card function">
+                    <h3 class="criteria-title">FUNCTION</h3>
+                    <p>How will your product work? What actions must it perform? What are the essential operations it must complete?</p>
+                </div>
+
+                <div class="criteria-card target-market">
+                    <h3 class="criteria-title">TARGET MARKET</h3>
+                    <p>Who will use your product? What are their specific needs, preferences, and limitations?</p>
+                </div>
+
+                <div class="criteria-card form">
+                    <h3 class="criteria-title">FORM</h3>
+                    <p>What will your product look like? What size, shape, color, and aesthetics should it have?</p>
+                </div>
+            </div>
+
+            <div class="tips-box">
+                <h4>Tips for Creating Effective Criteria:</h4>
+                <ul>
+                    <li>Make your criteria short but as specific as possible</li>
+                    <li>Avoid vague or general language</li>
+                    <li>List primary criteria first, then secondary criteria</li>
+                    <li>For clarity, display design criteria as bullet points</li>
+                    <li>Ensure criteria are measurable whenever possible</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="criteria-canvas">
+            <h2>Design Criteria Canvas</h2>
+
+            <p>Use this interactive canvas to develop the criteria for your design project. Organize your criteria into four categories:</p>
+
+            <div class="canvas-container">
+                <div class="canvas-row">
+                    <h4>MUST - Must-haves and non-negotiables</h4>
+                    <ul id="must-list" class="criteria-list">
+                        <!-- Items will be added here dynamically -->
+                    </ul>
+                    <div class="add-criteria" id="add-must">
+                        <span>+ Add a MUST criteria</span>
+                    </div>
+                    <input type="text" id="must-input" class="criteria-input" placeholder="Enter a MUST criteria" style="display: none;">
+                </div>
+
+                <div class="canvas-row">
+                    <h4>SHOULD - Should-haves and important features</h4>
+                    <ul id="should-list" class="criteria-list">
+                        <!-- Items will be added here dynamically -->
+                    </ul>
+                    <div class="add-criteria" id="add-should">
+                        <span>+ Add a SHOULD criteria</span>
+                    </div>
+                    <input type="text" id="should-input" class="criteria-input" placeholder="Enter a SHOULD criteria" style="display: none;">
+                </div>
+
+                <div class="canvas-row">
+                    <h4>COULD - Could-haves and optional features</h4>
+                    <ul id="could-list" class="criteria-list">
+                        <!-- Items will be added here dynamically -->
+                    </ul>
+                    <div class="add-criteria" id="add-could">
+                        <span>+ Add a COULD criteria</span>
+                    </div>
+                    <input type="text" id="could-input" class="criteria-input" placeholder="Enter a COULD criteria" style="display: none;">
+                </div>
+
+                <div class="canvas-row">
+                    <h4>WON'T - Won't haves - things that are definitely not on the table</h4>
+                    <ul id="wont-list" class="criteria-list">
+                        <!-- Items will be added here dynamically -->
+                    </ul>
+                    <div class="add-criteria" id="add-wont">
+                        <span>+ Add a WON'T criteria</span>
+                    </div>
+                    <input type="text" id="wont-input" class="criteria-input" placeholder="Enter a WON'T criteria" style="display: none;">
+                </div>
+            </div>
+
+            <button class="btn" id="save-criteria">Save Criteria</button>
+            <button class="btn" id="reset-canvas" style="background-color: #ff6b6b;">Reset Canvas</button>
+        </section>
+
+        <section id="clock-project">
+            <h2>Clock Project Example</h2>
+
+            <p>Let's apply these principles to a clock design project. When designing a clock, consider the following:</p>
+
+            <div class="tab-container">
+                <div class="tabs">
+                    <div class="tab active" data-tab="purpose-tab">Purpose</div>
+                    <div class="tab" data-tab="function-tab">Function</div>
+                    <div class="tab" data-tab="target-tab">Target Market</div>
+                    <div class="tab" data-tab="form-tab">Form</div>
+                </div>
+
+                <div class="tab-content active" id="purpose-tab">
+                    <h3>Purpose Considerations for a Clock</h3>
+                    <ul>
+                        <li>Is the clock primarily decorative or functional?</li>
+                        <li>Will it be used in a specific context (e.g., kitchen timer, alarm clock, wall clock)?</li>
+                        <li>Does it need to serve additional purposes beyond telling time?</li>
+                    </ul>
+                    <p>Example criteria:</p>
+                    <ul>
+                        <li>The clock must be easily readable from a distance of 3 meters</li>
+                        <li>The clock should blend with modern interior design</li>
+                        <li>The clock could include a temperature display</li>
+                    </ul>
+                </div>
+
+                <div class="tab-content" id="function-tab">
+                    <h3>Function Considerations for a Clock</h3>
+                    <ul>
+                        <li>How will the time be displayed (analog, digital, or both)?</li>
+                        <li>What power source will it use?</li>
+                        <li>What level of accuracy is required?</li>
+                        <li>Will it need additional functions (alarm, timer, etc.)?</li>
+                    </ul>
+                    <p>Example criteria:</p>
+                    <ul>
+                        <li>The clock must maintain accurate time within ±1 minute per month</li>
+                        <li>The clock should operate silently</li>
+                        <li>The clock must run for at least 12 months on a standard AA battery</li>
+                    </ul>
+                </div>
+
+                <div class="tab-content" id="target-tab">
+                    <h3>Target Market Considerations for a Clock</h3>
+                    <ul>
+                        <li>Who will be using the clock?</li>
+                        <li>What environment will it be used in?</li>
+                        <li>Are there any specific accessibility needs to consider?</li>
+                    </ul>
+                    <p>Example criteria:</p>
+                    <ul>
+                        <li>The clock must be suitable for elderly users with limited vision</li>
+                        <li>The clock should be appropriate for a classroom environment</li>
+                        <li>The clock must be affordable for the average household</li>
+                    </ul>
+                </div>
+
+                <div class="tab-content" id="form-tab">
+                    <h3>Form Considerations for a Clock</h3>
+                    <ul>
+                        <li>What size and shape should the clock be?</li>
+                        <li>What materials will be used?</li>
+                        <li>What color scheme and aesthetic style is appropriate?</li>
+                    </ul>
+                    <p>Example criteria:</p>
+                    <ul>
+                        <li>The clock must be no larger than 30cm in diameter</li>
+                        <li>The clock should use sustainable materials where possible</li>
+                        <li>The clock must be waterproof for bathroom use</li>
+                    </ul>
+                </div>
+            </div>
+
+            <h3>Sample Clock Design Criteria</h3>
+            <p>Here's an example of a completed set of design criteria for a wall clock project:</p>
+
+            <div class="canvas-container">
+                <div class="canvas-row">
+                    <h4>MUST</h4>
+                    <ul class="criteria-list">
+                        <li>Must display time accurately within ±30 seconds per week</li>
+                        <li>Must be easily readable from across a classroom (6 meters)</li>
+                        <li>Must be wall-mountable with secure fixings</li>
+                        <li>Must operate for at least 1 year without battery replacement</li>
+                    </ul>
+                </div>
+
+                <div class="canvas-row">
+                    <h4>SHOULD</h4>
+                    <ul class="criteria-list">
+                        <li>Should have a modern design that fits in educational environments</li>
+                        <li>Should have contrasting colors for easy readability</li>
+                        <li>Should be silent during operation</li>
+                        <li>Should be made from durable materials</li>
+                    </ul>
+                </div>
+
+                <div class="canvas-row">
+                    <h4>COULD</h4>
+                    <ul class="criteria-list">
+                        <li>Could include a second time zone display</li>
+                        <li>Could incorporate sustainable materials</li>
+                        <li>Could display the date</li>
+                    </ul>
+                </div>
+
+                <div class="canvas-row">
+                    <h4>WON'T</h4>
+                    <ul class="criteria-list">
+                        <li>Won't require internet connectivity</li>
+                        <li>Won't cost more than $50 to produce</li>
+                        <li>Won't make audible sounds (ticking or alarms)</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section id="assessment">
+            <h2>Assessment Guidelines</h2>
+
+            <p>When evaluating your design project, consider the following:</p>
+
+            <ul>
+                <li>You should aim to have at least 5-8 well-defined criteria to achieve an A grade</li>
+                <li>Your criteria should be specific, measurable, and relevant to your design</li>
+                <li>Consider how well your final design meets each of your criteria</li>
+                <li>Evaluate both the strengths and weaknesses of your design against the criteria</li>
+                <li>Suggest improvements based on your evaluation</li>
+            </ul>
+
+            <p>Remember to add your design criteria to your project documentation and refer back to them throughout the design process!</p>
+        </section>
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <p>Design Technologies | The Design Process and Design Criteria</p>
+            <p>© 2025 Design Education Resources</p>
+        </div>
+    </footer>
+
+    <script>
+        // Tab functionality
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                // Remove active class from all tabs and content
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+
+                // Add active class to clicked tab
+                tab.classList.add('active');
+
+                // Show corresponding content
+                const tabId = tab.getAttribute('data-tab');
+                document.getElementById(tabId).classList.add('active');
+            });
+        });
+
+        // Design criteria canvas functionality
+        function setupCriteriaSection(type) {
+            const addButton = document.getElementById(`add-${type}`);
+            const input = document.getElementById(`${type}-input`);
+            const list = document.getElementById(`${type}-list`);
+
+            // Show input when add button is clicked
+            addButton.addEventListener('click', () => {
+                addButton.style.display = 'none';
+                input.style.display = 'block';
+                input.focus();
+            });
+
+            // Add criteria when Enter is pressed
+            input.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter' && input.value.trim() !== '') {
+                    addCriteria(type, input.value.trim());
+                    input.value = '';
+                    input.style.display = 'none';
+                    addButton.style.display = 'flex';
+                }
+            });
+
+            // Hide input when focus is lost
+            input.addEventListener('blur', () => {
+                if (input.value.trim() === '') {
+                    input.style.display = 'none';
+                    addButton.style.display = 'flex';
+                }
+            });
+        }
+
+        function addCriteria(type, text) {
+            const list = document.getElementById(`${type}-list`);
+            const li = document.createElement('li');
+            li.innerHTML = `${text} <span class="remove-item">×</span>`;
+            list.appendChild(li);
+
+            // Add remove functionality
+            li.querySelector('.remove-item').addEventListener('click', () => {
+                list.removeChild(li);
+            });
+
+            // Save to local storage
+            saveCriteria();
+        }
+
+        function saveCriteria() {
+            const criteria = {
+                must: Array.from(document.querySelectorAll('#must-list li')).map(li => li.textContent.replace('×', '').trim()),
+                should: Array.from(document.querySelectorAll('#should-list li')).map(li => li.textContent.replace('×', '').trim()),
+                could: Array.from(document.querySelectorAll('#could-list li')).map(li => li.textContent.replace('×', '').trim()),
+                wont: Array.from(document.querySelectorAll('#wont-list li')).map(li => li.textContent.replace('×', '').trim())
+            };
+
+            localStorage.setItem('designCriteria', JSON.stringify(criteria));
+        }
+
+        function loadCriteria() {
+            const savedCriteria = localStorage.getItem('designCriteria');
+
+            if (savedCriteria) {
+                const criteria = JSON.parse(savedCriteria);
+
+                // Clear existing items
+                document.querySelectorAll('.criteria-list').forEach(list => {
+                    list.innerHTML = '';
+                });
+
+                // Add saved items
+                Object.keys(criteria).forEach(type => {
+                    criteria[type].forEach(text => {
+                        addCriteria(type, text);
+                    });
+                });
+            }
+        }
+
+        // Initialize criteria sections
+        setupCriteriaSection('must');
+        setupCriteriaSection('should');
+        setupCriteriaSection('could');
+        setupCriteriaSection('wont');
+
+        // Save button functionality
+        document.getElementById('save-criteria').addEventListener('click', () => {
+            saveCriteria();
+            alert('Your design criteria have been saved!');
+        });
+
+        // Reset button functionality
+        document.getElementById('reset-canvas').addEventListener('click', () => {
+            if (confirm('Are you sure you want to reset all criteria? This cannot be undone.')) {
+                document.querySelectorAll('.criteria-list').forEach(list => {
+                    list.innerHTML = '';
+                });
+                localStorage.removeItem('designCriteria');
+            }
+        });
+
+        // Load saved criteria on page load
+        window.addEventListener('DOMContentLoaded', loadCriteria);
+    </script>
+</body>
+</html>
